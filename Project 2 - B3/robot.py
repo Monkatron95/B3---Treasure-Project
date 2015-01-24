@@ -8,28 +8,61 @@ import math
 from math import sqrt, pow
 from math import sin, cos, atan2, degrees, radians, pi
 import winsound
-path = sys.path[0]
+import pygame
 from PIL import ImageTk
+
 #setting up the GUI
 window = Tk()
 #setting up the window title
 window.wm_title("Project")
 
+#obtaining project root folder
+path = sys.path[0]
+
 canvas= Canvas(window,width=1000, height=631, bg='light gray')
 canvas.pack(expand = YES, fill = BOTH)
 
-      
+#play music
+
+    #setup mixer 
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+
+    #initialize pygame
+pygame.init()
+
+    #initialize background music
+pygame.mixer.music.load('sound/music.ogg')
+pygame.mixer.music.play()
+v=0.5
+pygame.mixer.music.set_volume(v)
+
+#pause function
+pause = True
+def pause():
+    global pause
+    if pause == False:
+        pause = True
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.music.unpause()
+        pause=False
+        
 global move
 move=False
 
 
 #press space to start
+global move
+move=False
 def Space(self):
-    
+    pausebutton = Button(window, text= "Pause" ,command = pause, width = 10).pack()
+    pause()
     global move
     move = True
-       
-window.bind('<space>', Space) # space can't be used for anything else
+
+
+#bind the space key to the space function
+window.bind('<space>', Space)
 
 #title image
 title1 = ImageTk.PhotoImage(file = path+"/start/start.png")
@@ -44,44 +77,83 @@ while move==False:
     time.sleep(0.5)
     canvas.update()
 
-bg = ImageTk.PhotoImage(file = path+"/Map_of_Bulgaria.jpg")
-canvas.create_image(0, 0, image = bg, anchor = NW)
-
-
+#red robot score
 label1 = Label(text="Red robot score :",font=("Helvetica", 16))
-label1.pack(padx=0, pady=0, side=LEFT)
+label1.pack(padx=10, pady=0, side=LEFT)
 
 score=0
 labels1 = Label(text=score,font=("Helvetica", 20))
 labels1.pack(padx=0, pady=0, side=LEFT)
 
+#placeholder
+label0 = Label(text=" ",font=("Helvetica", 36))
+label0.pack(padx=50, pady=0, side=LEFT)
+
+#adding the timer
+#minutes(left number)
+minn=0
+labelm = Label(text=minn,font=("Helvetica", 36))
+labelm.pack(padx=0, pady=0, side=LEFT)
+#colon
+label = Label(text=":",font=("Helvetica", 36))
+label.pack(padx=10, pady=0, side=LEFT)
+#seconds (right number)
+sec=0
+labels = Label(text=sec,font=("Helvetica", 36))
+labels.pack(padx=0, pady=0, side=LEFT)
+
+#placeholder 2
+label0 = Label(text=" ",font=("Helvetica", 36))
+label0.pack(padx=25, pady=0, side=LEFT)
+
+#add volume slider
+volume =Scale(window,orient=HORIZONTAL,width=10,length=150.0,from_= 0,to= 100,tickinterval=20,resolution=10,sliderlength=25,label="Volume")
+v=50
+volume.set(v)
+volume.pack(padx=5, pady=0, side=LEFT)
+
+#add pop-up checkbox
+pop=IntVar()
+c = Checkbutton(window, text="Pop-ups", variable=pop)
+c.select()
+c.pack()
+
+#blue robot score
 score=0
 labels2 = Label(text=score,font=("Helvetica", 20))
 labels2.pack(padx=0, pady=0, side=RIGHT)
 
 label2 = Label(text="Blue robot score :",font=("Helvetica", 16))
-label2.pack(padx=0, pady=0, side=RIGHT)
+label2.pack(padx=10, pady=0, side=RIGHT)
 
+#import background image
+bg = ImageTk.PhotoImage(file = path+"/Map_of_Bulgaria.jpg")
+canvas.create_image(0, 0, image = bg, anchor = NW)
+
+#import end images
+success = ImageTk.PhotoImage(file = path+"/end/success.png")
+time_out = ImageTk.PhotoImage(file = path+"/end/time_out.png")
+
+#import gold image
 gold = ImageTk.PhotoImage(file = path+"/Images/type_11.png")
+
+#import landmark titles
 text1 = ImageTk.PhotoImage(file = path+"/text/text1.png")
 text2 = ImageTk.PhotoImage(file = path+"/text/text2.png")
 text3 = ImageTk.PhotoImage(file = path+"/text/text3.png")
 text4 = ImageTk.PhotoImage(file = path+"/text/text4.png")
 text5 = ImageTk.PhotoImage(file = path+"/text/text5.png")
 text6 = ImageTk.PhotoImage(file = path+"/text/text6.png")
+#return the angle between two points
 def angle(x0, y0, x1, y1):
-    """ Returns the angle between two points.
-    """
     return degrees( atan2(y1-y0, x1-x0) )
 
+#return the distance between two points
 def distance(x0, y0, x1, y1):
-    """ Returns the distance between two points.
-    """
     return sqrt(pow(x1-x0, 2) + pow(y1-y0, 2))
 
+#return the coordinates of given distance and angle from a point
 def coordinates(x0, y0, distance, angle):
-    """ Returns the coordinates of given distance and angle from a point.
-    """
     return (x0 + cos(radians(angle)) * distance,
             y0 + sin(radians(angle)) * distance)
 
@@ -195,7 +267,8 @@ class Robot:
                         if i < 6:
                             if c[i]==1:
                                 canvas.create_image(landmark.x, landmark.y, image = text[i], anchor = CENTER)
-                                webbrowser.open(links[i])
+                                if check:
+                                    webbrowser.open(links[i])
                                 c[i] = c[i] + 1
                                 
                                 
@@ -394,14 +467,49 @@ def detect (x, y):
 for landmark in world.landmarks:    
     detect(landmark.x, landmark.y)
 
+t=0
 
-for t in range(1000):
-
+#move robots
+while True:
+    #loop for the pause button
+    while pause == False:
         
+                #stop the program if 5 treasures have been found
+        while c3po.score + r2d2.score == 500 :
+            canvas.create_image(0, 0, image = success, anchor = NW)
+            canvas.update()
+
+                 #stop the program after 3 minutes
+        while minn == 3:
+            canvas.create_image(0, 0, image = time_out, anchor = NW)
+            canvas.update()
+            
+        #update the seconds and minutes
+        if t%10==0 and t <> 0:
+            sec=sec+1
+            labels['text'] = sec
+            labels.pack()
+        if sec==60:
+            sec=0
+            labels['text'] = sec
+            minn=minn+1
+            labelm['text'] = minn
+            labels.pack()
+            labelm.pack()
+            
+        #update volume
+        v=volume.get()
+        volume.pack()
+        pygame.mixer.music.set_volume(v/100.0)
+
+        #update stting form checkbox
+        check=pop.get()
+        
+        #move robots
         r2d2.roam()
-        
         c3po.roam()
         
+        #stop robots if traffic lights are red        
         if traffic1.r == 'red' or traffic1.r == 'yellow':
                 r2d2.speed = 0
         else:
@@ -425,13 +533,17 @@ for t in range(1000):
                   
         traffic1.light()
         traffic2.light()
-
+        
+        #update score
         labels1['text'] = r2d2.score
         labels1.pack()
         
         labels2['text'] = c3po.score
         labels2.pack() 
 
+        #delay animation by 0.1 seconds
         time.sleep(0.1)
+        t=t+1
+    canvas.update()
 window.mainloop()   
        
