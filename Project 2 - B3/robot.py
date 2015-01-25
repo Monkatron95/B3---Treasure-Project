@@ -185,7 +185,7 @@ c = [1 for j in range(6)]
 
 class Robot:
     
-    def __init__(self, world, x, y, I, speed=1.0, score =0):
+    def __init__(self, name, world, x, y, I, speed=1.0, score =0, currentimage=0):
         
         self.speed = speed
         
@@ -193,8 +193,9 @@ class Robot:
         self.y = y 
         self.score = score
         self.I = I
-        
 
+        self.name=name
+        self.currentimage=0
         self.world = world
         self.feeler_length = 25
         
@@ -208,7 +209,15 @@ class Robot:
         """
 
         return angle(self.x, self.y, self.x+self._vx, self.y+self._vy)
-    
+
+    def colorChange(self):
+        r=random.randint(0, 3)
+        while ( r==self.currentimage):
+            r=random.randint(0, 3)
+        self.currentimage=r
+        name=self.name
+        self.I=ImageTk.PhotoImage (file = path+"/Images/"+name+"_"+str(r)+".png") 
+        self.drawRobot(canvas)
     def avoid_landmarks(self, m = 0.4 , collision=4):
 
         # Find out where the robot is going.
@@ -234,17 +243,15 @@ class Robot:
                 
                 isFound = linearSearch(theItem, theList)
                 i = world.landmarks.index(landmark)
-                 
-                  
+
                 if isFound:
-                    
+                    self.colorChange()
                     world.landmarks.remove(landmark)
-                    
-                    
                     canvas.create_image(landmark.x, landmark.y, image = gold, anchor = CENTER)
 
                     winsound.PlaySound(path+"/sound/sound.mp3", winsound.SND_ASYNC)
                     
+
                     
                     
                     print("Found")
@@ -255,17 +262,19 @@ class Robot:
                 
                     
                 else:
+
                         links=["http://bulgariatravel.org/en/object/21/Krepost_Baba_Vida",
                               "http://bulgariatravel.org/en/object/2/Arheologicheski_rezervat_Madara",
                               "http://bulgariatravel.org/en/object/272/rilski_manastir",
                               "http://bulgariatravel.org/en/object/53/Nacionalen_park_Pirin",
                               "http://bulgariatravel.org/en/object/69/sveshtarska_grobnica",
                               "http://bulgariatravel.org/en/object/311/Perperikon"]
-                        
+        
                         text=[text1, text2, text3, text4, text5, text6]
                         
                         if i < 6:
                             if c[i]==1:
+                                self.colorChange()
                                 canvas.create_image(landmark.x, landmark.y, image = text[i], anchor = CENTER)
                                 if check:
                                     webbrowser.open(links[i])
@@ -389,10 +398,10 @@ class Traffic:
                 self.j=self.j+3
                 
 
-r2d2 = Robot(world, x=random.randint(40, 890), y=random.randint(40, 600),
-             I=ImageTk.PhotoImage (file = path+"/Images/red_robot.png"), speed = 10.0, score = 0)
-c3po = Robot(world, x=random.randint(40, 890), y=random.randint(40, 600),
-             I=ImageTk.PhotoImage (file = path+"/Images/blue_robot.png"), speed = 10.0, score = 0) 
+r2d2 = Robot("r2d2" , world, x=random.randint(40, 890), y=random.randint(40, 600),
+             I=ImageTk.PhotoImage (file = path+"/Images/r2d2_0.png"), speed = 10.0, score = 0, currentimage=0)
+c3po = Robot("c3po", world, x=random.randint(40, 890), y=random.randint(40, 600),
+             I=ImageTk.PhotoImage (file = path+"/Images/c3po_0.png"), speed = 10.0, score = 0, currentimage=0)
 r2d2.drawRobot(canvas)
 c3po.drawRobot(canvas)
 
