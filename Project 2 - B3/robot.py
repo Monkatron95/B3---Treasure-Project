@@ -118,9 +118,18 @@ c = Checkbutton(window, text="Pop-ups", variable=pop)
 c.select()
 c.pack()
 
+#add a pause button
 pausebutton = Button(window, text= "Pause" ,command = pausegame, width = 10)
 pausebutton.pack()
 pausegame()
+
+#add a change color button
+def colorchange ():
+     r2d2.colorChange()
+     c3po.colorChange()
+colorbutton = Button(window, text= "Change Colors" ,command = colorchange, width = 10)
+colorbutton.pack()
+
 
 #blue robot score
 score=0
