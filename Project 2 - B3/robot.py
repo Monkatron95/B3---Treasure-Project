@@ -38,14 +38,16 @@ pygame.mixer.music.set_volume(v)
 
 #pause function
 pause = True
-def pause():
+def pausegame():
     global pause
     if pause == False:
         pause = True
         pygame.mixer.music.pause()
+        pausebutton["text"] = "Start"
     else:
         pygame.mixer.music.unpause()
         pause=False
+        pausebutton["text"] = "Pause"
         
 global move
 move=False
@@ -55,8 +57,6 @@ move=False
 global move
 move=False
 def Space(self):
-    pausebutton = Button(window, text= "Pause" ,command = pause, width = 10).pack()
-    pause()
     global move
     move = True
 
@@ -117,6 +117,10 @@ pop=IntVar()
 c = Checkbutton(window, text="Pop-ups", variable=pop)
 c.select()
 c.pack()
+
+pausebutton = Button(window, text= "Pause" ,command = pausegame, width = 10)
+pausebutton.pack()
+pausegame()
 
 #blue robot score
 score=0
@@ -277,6 +281,7 @@ class Robot:
                                 self.colorChange()
                                 canvas.create_image(landmark.x, landmark.y, image = text[i], anchor = CENTER)
                                 if check:
+                                    pausegame()
                                     webbrowser.open(links[i])
                                 c[i] = c[i] + 1
                                 
