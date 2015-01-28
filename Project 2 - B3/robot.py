@@ -22,6 +22,7 @@ path = sys.path[0]
 canvas= Canvas(window,width=1000, height=631, bg='light gray')
 canvas.pack(expand = YES, fill = BOTH)
 
+
 #play music
 
     #setup mixer 
@@ -51,6 +52,25 @@ def pausegame():
         
 global move
 move=False
+
+#end function
+
+#import end images
+success = ImageTk.PhotoImage(file = path+"/end/success.png")
+time_out = ImageTk.PhotoImage(file = path+"/end/time_out.png")
+
+END = True
+def endgame():
+    global END
+    END == False
+    END = True
+    canvas.create_image(0, 0, image = success, anchor = NW)
+    canvas.update()
+
+
+global END
+END=False
+
 
 
 #press space to start
@@ -123,6 +143,12 @@ pausebutton = Button(window, text= "Pause" ,command = pausegame, width = 10)
 pausebutton.pack()
 pausegame()
 
+#add an END button
+
+endbutton = Button(window, text="END", command=endgame, width = 10)
+endbutton.pack()
+endgame()
+
 #add a change color button
 def colorchange ():
      r2d2.colorChange()
@@ -143,9 +169,6 @@ label2.pack(padx=10, pady=0, side=RIGHT)
 bg = ImageTk.PhotoImage(file = path+"/Map_of_Bulgaria.jpg")
 canvas.create_image(0, 0, image = bg, anchor = NW)
 
-#import end images
-success = ImageTk.PhotoImage(file = path+"/end/success.png")
-time_out = ImageTk.PhotoImage(file = path+"/end/time_out.png")
 
 #import gold image
 gold = ImageTk.PhotoImage(file = path+"/Images/type_11.png")
