@@ -623,4 +623,3 @@ for t in range(1000):
 
         time.sleep(0.1)
 window.mainloop()   
-
