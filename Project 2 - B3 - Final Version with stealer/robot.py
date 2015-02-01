@@ -342,7 +342,7 @@ def NoDice():
 global c
 c = [1 for j in range(6)]
 
-class Robot:
+class Robot(World):
     
     def __init__(self, name, world, x, y, I, speed=1.0, score =0, currentimage=0, regret = 0):
         
@@ -546,7 +546,7 @@ world = World()
     
         
 
-class StealerRobot:
+class StealerRobot(World):
     
     def __init__(self, name, world, x, y, I, speed=1.0, score =0, currentimage=0):
         
