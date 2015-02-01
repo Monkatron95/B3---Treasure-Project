@@ -32,7 +32,7 @@ pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 
     #initialize background music
-pygame.mixer.music.load('sound/music.ogg')
+pygame.mixer.music.load('sound/track_1.ogg')
 pygame.mixer.music.play()
 v=0.5
 pygame.mixer.music.set_volume(v)
@@ -98,33 +98,55 @@ while move==False:
     canvas.update()
 
 #red robot score
-label1 = Label(text="Red robot score :",font=("Helvetica", 16))
+label1 = Label(text="Red robot score:",font=("Helvetica", 10))
 label1.pack(padx=10, pady=0, side=LEFT)
 
 score=0
-labels1 = Label(text=score,font=("Helvetica", 20))
+labels1 = Label(text=score,font=("Helvetica", 10))
 labels1.pack(padx=0, pady=0, side=LEFT)
 
 #placeholder
-label0 = Label(text=" ",font=("Helvetica", 36))
-label0.pack(padx=50, pady=0, side=LEFT)
+label0 = Label(text=" ",font=("Helvetica", 10))
+label0.pack(padx=2, pady=0, side=LEFT)
 
 #adding the timer
 #minutes(left number)
 minn=0
-labelm = Label(text=minn,font=("Helvetica", 36))
+labelm = Label(text=minn,font=("Helvetica", 10))
 labelm.pack(padx=0, pady=0, side=LEFT)
 #colon
-label = Label(text=":",font=("Helvetica", 36))
-label.pack(padx=10, pady=0, side=LEFT)
+label = Label(text=":",font=("Helvetica", 10))
+label.pack(padx=0, pady=0, side=LEFT)
 #seconds (right number)
 sec=0
-labels = Label(text=sec,font=("Helvetica", 36))
-labels.pack(padx=0, pady=0, side=LEFT)
+labels = Label(text=sec,font=("Helvetica", 10))
+labels.pack(padx=1, pady=0, side=LEFT)
+
+probcount1 = 100
+labels3 = Label(text= probcount1,font=("Helvetica", 10))
+labels3.pack(padx=0, pady= 0, side=RIGHT)
+
+label3 = Label(text="Likeness of Blue gambling:",font=("Helvetica", 10))
+label3.pack(padx=0, pady= 0, side=RIGHT)
+
+probcount2 = 100
+label4 = Label(text="Likeness of Red gambling:",font=("Helvetica", 10))
+label4.pack(padx=0, pady= 0, side=LEFT)
+
+labels4 = Label(text=probcount2 ,font=("Helvetica", 10))
+labels4.pack(padx=0, pady= 40, side=LEFT)
+
+#blue robot score
+score=0
+labels2 = Label(text=score,font=("Helvetica", 10))
+labels2.pack(padx=0, pady=0, side=RIGHT)
+
+label2 = Label(text="Blue robot score:",font=("Helvetica", 10))
+label2.pack(padx=10, pady=0, side=RIGHT)
 
 #placeholder 2
-label0 = Label(text=" ",font=("Helvetica", 36))
-label0.pack(padx=25, pady=0, side=LEFT)
+#label0 = Label(text=" ",font=("Helvetica", 10))
+#label0.pack(padx=25, pady=0, side=LEFT)
 
 #add volume slider
 volume =Scale(window,orient=HORIZONTAL,width=10,length=150.0,from_= 0,to= 100,tickinterval=20,resolution=10,sliderlength=25,label="Volume")
@@ -157,14 +179,20 @@ def colorchange ():
 colorbutton = Button(window, text= "Change Colors" ,command = colorchange, width = 10)
 colorbutton.pack()
 
+#add a next song button
+global song
+song=1
+def nextsong ():
+        global song
+        song=song+1
+        if song == 4:
+            song=1
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('sound/track_'+str(song)+'.ogg')
+        pygame.mixer.music.play()
+nextsong = Button(window, text= "Change Song" ,command = nextsong, width = 10)
+nextsong.pack()
 
-#blue robot score
-score=0
-labels2 = Label(text=score,font=("Helvetica", 20))
-labels2.pack(padx=0, pady=0, side=RIGHT)
-
-label2 = Label(text="Blue robot score :",font=("Helvetica", 16))
-label2.pack(padx=10, pady=0, side=RIGHT)
 
 #import background image
 bg = ImageTk.PhotoImage(file = path+"/Map_of_Bulgaria.jpg")
@@ -194,6 +222,10 @@ def coordinates(x0, y0, distance, angle):
     return (x0 + cos(radians(angle)) * distance,
             y0 + sin(radians(angle)) * distance)
 
+Bar1 = canvas.create_rectangle(760,70,790,100, fill='blue')
+Bar2=canvas.create_rectangle(790,70,820,100, fill='blue')
+Bar3 =canvas.create_rectangle(820,70,850,100, fill='blue')
+
 def linearSearch(myItem, myList):
         found = False
         position = 0
@@ -206,6 +238,7 @@ def linearSearch(myItem, myList):
 class World: 
     def __init__(self):
         self.landmarks = []
+        self.logo = []
 
 
 class Landmark:
@@ -217,12 +250,101 @@ class Landmark:
         self.canvas = canvas
         self.shape = canvas.create_image(self.x, self.y, image = self.I, anchor = CENTER)
 
+
+class Logo:
+    def __init__(self, x, y, I):
+        self.x = x
+        self.y = y
+        self.I = I
+    def drawLogo(self, canvas):
+        self.canvas = canvas
+        self.shape = canvas.create_image(self.x, self.y, image = self.I, anchor = CENTER)
+
+def draw (x,y,z):
+    logo = Logo(500,315, ImageTk.PhotoImage (file = path+x))
+    world.logo.append(logo)
+    logo.drawLogo(canvas)
+    time.sleep(y)
+    canvas.update()
+    world.logo.remove(logo)
+    time.sleep(z)
+    canvas.update()
+
+def reset (Bar1, Bar2, Bar3):
+    canvas.itemconfig(Bar1, fill="blue")
+    canvas.itemconfig(Bar2, fill="blue")
+    canvas.itemconfig(Bar3, fill="blue")
+
+
+def ColourChange(k1, Bar1):
+    
+    if k1 == 0:
+        canvas.itemconfig(Bar1, fill="red")
+    elif k1 == 1:
+        canvas.itemconfig(Bar1, fill="yellow")
+    elif k1 == 2:
+        canvas.itemconfig(Bar1, fill="purple")
+    elif k1 == 3:
+        canvas.itemconfig(Bar1, fill="orange")
+    elif k1 == 4:
+        canvas.itemconfig(Bar1, fill="green")
+    else:
+        canvas.itemconfig(Bar1, fill="pink")
+        
+        
+    time.sleep(2)
+    canvas.update()
+
+def LuckySearch():
+    draw("/MyImages/GambleScreen.png", 0,0)
+    draw("/MyImages/GambleScreenYes.png",2,1)
+        
+        
+    j1 = random.randint(0,4)
+    j2 = random.randint(0,4)
+    j3 = random.randint(0,4)
+    
+    ColourChange(j1, Bar1)
+    ColourChange(j2, Bar2)
+    ColourChange(j3, Bar3)
+    
+    if j1 == j2 == j3:
+        print 'jackpot'
+        draw("/MyImages/jackpot.png",1,1)
+        time.sleep(2)
+        canvas.update()
+        return (4, 1000)
+            
+
+    elif j1== j2 or j2 == j3:
+        print '2 in a row'
+        draw("/MyImages/twoinarow.png",1,1)
+        time.sleep(2)
+        canvas.update()
+        return(1, 200)           
+
+    else:
+        print 'unlucky'
+        draw("/MyImages/unlucky.png",1,1)
+        time.sleep(2)
+        canvas.update()
+        return(-4, -200)
+            
+
+    time.sleep(0.5)
+    canvas.update()
+
+def NoDice():
+     draw("/MyImages/GambleScreen.png", 0,0)
+     draw("/MyImages/GambleScreenNo.png", 2,1)
+     return(0, 0)
+
 global c
 c = [1 for j in range(6)]
 
 class Robot:
     
-    def __init__(self, name, world, x, y, I, speed=1.0, score =0, currentimage=0):
+    def __init__(self, name, world, x, y, I, speed=1.0, score =0, currentimage=0, regret = 0):
         
         self.speed = speed
         
@@ -230,6 +352,7 @@ class Robot:
         self.y = y 
         self.score = score
         self.I = I
+        self.regret = regret
 
         self.name=name
         self.currentimage=0
@@ -296,9 +419,43 @@ class Robot:
                     
                     
                     print("Found")
-                    self.score +=100
-                    
+                    self.score +=100  
                     print self.score
+
+                    if self.regret <-7:
+                        self.regret = -7
+
+                    print self.regret , 'regret first'
+
+                    ugo = random.randint(1,8 + self.regret)
+                    
+                    print ugo , 'ugo'
+
+                    if ugo > 1:
+                        x = LuckySearch()
+                        reset(Bar1, Bar2, Bar3)
+                        print x
+                        d =  x[0]
+                        g = x[1]
+                        self.regret = self.regret + d
+                        #print self.regret
+
+                    else:
+                        print 'wooo'
+                        x = NoDice()
+                        print x
+                        d =  x[0]
+                        g = x[1]
+                        self.regret = self.regret + d
+
+                    print self.regret , 'regret second'
+                        
+              
+                    
+                    
+                    self.score +=g
+                    #print self.score
+                            
                                  
                 
                     
@@ -618,7 +775,7 @@ r2d2 = Robot("r2d2" , world, x=random.randint(40, 890), y=random.randint(40, 600
 c3po = Robot("c3po", world, x=random.randint(40, 890), y=random.randint(40, 600),
              I=ImageTk.PhotoImage (file = path+"/Images/c3po_0.png"), speed = 10.0, score = 0, currentimage=0)
 treasurestealer = StealerRobot("Treasure stealer", world, x=random.randint(20,890), y=random.randint(20,600),
-             I=ImageTk.PhotoImage (file = path+"/Images/green_robot.png"), speed = 10.0, score = 0, currentimage=0)
+             I=ImageTk.PhotoImage (file = path+"/Images/treasure stealer_0.png"), speed = 10.0, score = 0, currentimage=0)
 r2d2.drawRobot(canvas)
 c3po.drawRobot(canvas)
 treasurestealer.drawRobot(canvas)
@@ -680,6 +837,10 @@ landmark.drawLandmark(canvas)
 landmark = Landmark(940, 610, ImageTk.PhotoImage (file = path+"/Images/empty.png"))
 world.landmarks.append(landmark)
 landmark.drawLandmark(canvas)
+
+logo = Logo(805,35, ImageTk.PhotoImage (file = path+"/MyImages/slots.png"))
+world.logo.append(logo)
+logo.drawLogo(canvas)
 
 def detect (x, y):
         
@@ -795,11 +956,43 @@ while True:
         labels1.pack()
         
         labels2['text'] = c3po.score
-        labels2.pack() 
+        labels2.pack()
+
+        
 
         #delay animation by 0.1 seconds
         time.sleep(0.1)
+
         t=t+1
+
+        try:
+            probcount1 = float((c3po.regret + 8)-1)
+            probcount1=  probcount1 /(c3po.regret +8)
+            probcount1 = int(probcount1 * 100)
+            if probcount1 >=0:
+                labels3['text'] = str(probcount1) + '%' 
+                labels3.pack()
+            else:
+                labels3['text'] = '0%' 
+                labels3.pack()
+        except(ZeroDivisionError):
+            labels3['text'] = '0%' 
+            labels3.pack()
+
+        try:
+            probcount2 = float((r2d2.regret + 8)-1)
+            probcount2=  probcount2 /(r2d2.regret +8)
+            probcount2 = int(probcount2 * 100)
+            if probcount2 >=0:
+                labels4['text'] = str(probcount2) + '%'
+                labels4.pack()
+            else:
+                labels4['text'] = '0%' 
+                labels4.pack()
+        except(ZeroDivisionError):
+            labels4['text'] = '0%' 
+            labels4.pack()
+
     canvas.update()
 window.mainloop()   
        
