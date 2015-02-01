@@ -32,7 +32,7 @@ pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 
     #initialize background music
-pygame.mixer.music.load('sound/music.ogg')
+pygame.mixer.music.load('sound/track_1.ogg')
 pygame.mixer.music.play()
 v=0.5
 pygame.mixer.music.set_volume(v)
@@ -106,8 +106,8 @@ labels1 = Label(text=score,font=("Helvetica", 10))
 labels1.pack(padx=0, pady=0, side=LEFT)
 
 #placeholder
-#label0 = Label(text=" ",font=("Helvetica", 10))
-#label0.pack(padx=50, pady=0, side=LEFT)
+label0 = Label(text=" ",font=("Helvetica", 10))
+label0.pack(padx=2, pady=0, side=LEFT)
 
 #adding the timer
 #minutes(left number)
@@ -116,11 +116,11 @@ labelm = Label(text=minn,font=("Helvetica", 10))
 labelm.pack(padx=0, pady=0, side=LEFT)
 #colon
 label = Label(text=":",font=("Helvetica", 10))
-label.pack(padx=8, pady=0, side=LEFT)
+label.pack(padx=0, pady=0, side=LEFT)
 #seconds (right number)
 sec=0
 labels = Label(text=sec,font=("Helvetica", 10))
-labels.pack(padx=0, pady=0, side=LEFT)
+labels.pack(padx=1, pady=0, side=LEFT)
 
 probcount1 = 100
 labels3 = Label(text= probcount1,font=("Helvetica", 10))
@@ -179,7 +179,19 @@ def colorchange ():
 colorbutton = Button(window, text= "Change Colors" ,command = colorchange, width = 10)
 colorbutton.pack()
 
-
+#add a next song button
+global song
+song=1
+def nextsong ():
+        global song
+        song=song+1
+        if song == 4:
+            song=1
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('sound/track_'+str(song)+'.ogg')
+        pygame.mixer.music.play()
+nextsong = Button(window, text= "Change Song" ,command = nextsong, width = 10)
+nextsong.pack()
 
 
 #import background image
