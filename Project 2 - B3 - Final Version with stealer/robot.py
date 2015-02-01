@@ -763,7 +763,7 @@ r2d2 = Robot("r2d2" , world, x=random.randint(40, 890), y=random.randint(40, 600
 c3po = Robot("c3po", world, x=random.randint(40, 890), y=random.randint(40, 600),
              I=ImageTk.PhotoImage (file = path+"/Images/c3po_0.png"), speed = 10.0, score = 0, currentimage=0)
 treasurestealer = StealerRobot("Treasure stealer", world, x=random.randint(20,890), y=random.randint(20,600),
-             I=ImageTk.PhotoImage (file = path+"/Images/green_robot.png"), speed = 10.0, score = 0, currentimage=0)
+             I=ImageTk.PhotoImage (file = path+"/Images/treasure stealer_0.png"), speed = 10.0, score = 0, currentimage=0)
 r2d2.drawRobot(canvas)
 c3po.drawRobot(canvas)
 treasurestealer.drawRobot(canvas)
