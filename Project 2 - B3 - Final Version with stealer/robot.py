@@ -29,6 +29,8 @@ cols = ("red", "yellow", "blue", "orange", "green", "purple", "brown")
 
 col = cols[col_index]
 
+global pause
+pause = True
 
 #setting up the GUI
 window = Tk()
@@ -124,7 +126,6 @@ v=0.5
 pygame.mixer.music.set_volume(v)
 
 #pause function
-pause = True
 def pausegame():
     global pause
     if pause == False:
@@ -269,6 +270,7 @@ colorbutton.pack()
 global song
 song=1
 def nextsong ():
+    if pause == False:
         global song
         song=song+1
         if song == 4:
