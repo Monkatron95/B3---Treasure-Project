@@ -1,4 +1,5 @@
 from Tkinter import *
+import tkMessageBox
 import random
 import time
 import os, sys
@@ -11,6 +12,24 @@ import winsound
 import pygame
 from PIL import ImageTk
 
+global stat
+global xc
+global yc
+
+stat = "first"
+WIDTH = 500
+HEIGHT = 500
+MAXRAD = 60
+PI = 3.14159
+xc = WIDTH / 2
+xc = HEIGHT / 2
+
+col_index = 0
+cols = ("red", "yellow", "blue", "orange", "green", "purple", "brown")
+
+col = cols[col_index]
+
+
 #setting up the GUI
 window = Tk()
 #setting up the window title
@@ -21,6 +40,73 @@ path = sys.path[0]
 
 canvas= Canvas(window,width=1000, height=631, bg='light gray')
 canvas.pack(expand = YES, fill = BOTH)
+
+def shift_centre_proc(event):
+    global xc
+    global yc
+    global stat
+    if stat == "first":
+        stat = "second"
+        return
+    xc = event.x
+    yc = event.y
+
+def my_draw_proc(event):
+    global stat
+    global col_index
+    global col
+    if stat == "first":
+        canvas.create_text(200, 100, font = "Arial 12",\
+        text="LH Mouse Butt - change flower position, \n"+\
+                    "RH Mouse Butt - pop up menu")
+        canvas.create_text(200,130,font="Arial 12 bold", text="OK")
+        canvas.create_rectangle(60,80,340,140)
+        return
+
+    x = event.x
+    y = event.y
+    xr = x - xc
+    yr = y - yc
+    ang = 0
+    if xr != 0:
+        ang = math.atan(yr / xr + 0.0)
+
+    rad = math.sqrt( (xr * xr) + (yr * yr) )
+    if rad > MAXRAD:
+        return
+    for i in range (1,21):
+        ang = ang + PI/10.0
+        x = xc + rad * math.cos(ang)
+        y = yc + rad * math.sin(ang)
+        canvas.create_line(x,y,x+6,y,width=6,fill=col)
+
+    col_index = col_index = 1
+    if col_index > 9:
+        col_index = 0
+    col = cols[col_index]
+
+#def clear_proc():
+#    canvas.create_rectangle(1,1,WIDTH+2,HEIGHT+2,fill="white")
+
+def menu_proc(event):
+    my_menu.post(event.x_root,event.y_root)
+
+def quit_proc():
+    if tkMessageBox.askokcancel("Quit", "Are you sure ?")\
+       == True:
+        canvas.destroy()
+        
+
+canvas.bind("<Motion>", my_draw_proc)
+canvas.bind("<Button-1>" , shift_centre_proc)
+canvas.bind("<Button-3>" , menu_proc)
+
+my_menu = Menu(canvas, tearoff=0)
+#my_menu.add_command(label="clear", comman=clear_proc)
+my_menu.add_command(label="quit", command=quit_proc)
+
+
+
 
 
 #play music
